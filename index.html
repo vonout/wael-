@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Image Viewer & Editor Mockup</title>
+    <title>Professional Text Editor</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto+Mono&display=swap" rel="stylesheet">
     <style>
         body {
@@ -14,25 +14,31 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%); /* Softer gradient */
+            background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%); /* Fresh, calm gradient */
             color: #333;
-            overflow-x: hidden; /* Prevent horizontal scroll */
+            overflow-x: hidden;
+            transition: background 0.5s ease-in-out;
         }
         
         .container {
             text-align: center;
-            background: rgba(255, 255, 255, 0.95); /* Slightly transparent white */
-            padding: 3rem;
-            border-radius: 20px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.15); /* More pronounced shadow */
+            background: rgba(255, 255, 255, 0.95);
+            padding: 3.5rem 4rem; /* More generous padding */
+            border-radius: 25px; /* Softer corners */
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2); /* Deeper shadow */
             max-width: 90%;
-            width: 500px; /* Fixed width for better layout */
+            width: 700px; /* Wider for text input */
             box-sizing: border-box;
             position: relative;
-            z-index: 1; /* Ensure it's above any subtle body patterns */
+            z-index: 1;
+            animation: fadeInContainer 1s ease-out;
         }
 
-        /* Subtle background pattern for container */
+        @keyframes fadeInContainer {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .container::before {
             content: '';
             position: absolute;
@@ -40,49 +46,82 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIxMCIgY3k9IjEwIiByPSIxIiBmaWxsPSIjRjBGNEY0Ii8+PC9zdmc+') repeat;
-            opacity: 0.2; /* Lighter opacity */
+            background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzUiIGhlaWdodD0iMzUiIHZpZXdCb3g9IjAgMCAzNSAzNSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIxNy41IiBjeT0iMTcuNSIgcj0iMS41IiBmaWxsPSIjRjBGNEY0Ii8+PC9zdmc+') repeat;
+            opacity: 0.2;
             z-index: 0;
-            border-radius: 20px;
+            border-radius: 25px;
         }
         
         h1 {
-            font-size: 2.2em;
-            color: #4a4a4a;
-            margin-bottom: 2rem;
+            font-size: 2.8em; /* Larger title */
+            color: #2c3e50; /* Darker, professional blue */
+            margin-bottom: 2.5rem;
             font-weight: 700;
+            position: relative;
+            z-index: 1;
+            letter-spacing: 1px;
+            animation: slideInTitle 1s ease-out;
+        }
+
+        @keyframes slideInTitle {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
         }
         
-        .main-buttons {
+        textarea {
+            width: calc(100% - 40px); /* Adjust for padding */
+            height: 250px; /* Taller text area */
+            padding: 20px;
+            font-size: 1.1em;
+            line-height: 1.6;
+            border: 2px solid #a1c4fd; /* Soft blue border */
+            border-radius: 15px;
+            outline: none;
+            resize: vertical; /* Allow vertical resizing only */
+            margin-bottom: 2.5rem;
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.1);
+            transition: all 0.3s ease;
+            font-family: 'Roboto Mono', monospace; /* Monospace for text content */
+            color: #444;
+            background-color: #fcfdff; /* Slightly off-white background */
+        }
+
+        textarea:focus {
+            border-color: #007bff; /* Brighter blue on focus */
+            box-shadow: 0 12px 35px rgba(0, 123, 255, 0.25);
+            transform: translateY(-3px);
+        }
+
+        .action-buttons {
             display: flex;
             justify-content: center;
-            gap: 15px; /* Space between buttons */
-            margin-bottom: 2.5rem;
+            gap: 20px;
+            margin-bottom: 1.5rem; /* Space before music button */
             position: relative;
             z-index: 1;
         }
 
         .action-btn {
-            background: linear-gradient(45deg, #007bff, #0056b3); /* Professional blue gradient */
+            background: linear-gradient(45deg, #007bff, #0056b3);
             color: white;
             border: none;
-            padding: 18px 25px;
+            padding: 18px 30px;
             font-size: 1.1em;
             border-radius: 30px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3); /* Blue shadow */
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);
             font-weight: 600;
             letter-spacing: 0.5px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
         
         .action-btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 12px 30px rgba(0, 123, 255, 0.4);
-            background: linear-gradient(45deg, #0056b3, #007bff); /* Reverse gradient on hover */
+            background: linear-gradient(45deg, #0056b3, #007bff);
         }
         
         .action-btn:active {
@@ -90,462 +129,134 @@
             box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
         }
 
-        .action-btn.edit {
-            background: linear-gradient(45deg, #28a745, #218838); /* Green for edit */
-            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+        .action-btn.clear {
+            background: linear-gradient(45deg, #dc3545, #b82c3b); /* Red for clear */
+            box-shadow: 0 8px 25px rgba(220, 53, 69, 0.3);
         }
 
-        .action-btn.edit:hover {
-            box-shadow: 0 12px 30px rgba(40, 167, 69, 0.4);
-            background: linear-gradient(45deg, #218838, #28a745);
+        .action-btn.clear:hover {
+            box-shadow: 0 12px 30px rgba(220, 53, 69, 0.4);
+            background: linear-gradient(45deg, #b82c3b, #dc3545);
         }
-        
-        .image-container {
-            display: none;
-            margin-top: 1rem;
+
+        .music-control {
+            margin-top: 1.5rem;
             position: relative;
             z-index: 1;
         }
-        
-        .image-container.show {
-            display: block;
-            animation: fadeInScale 0.7s ease-in-out; /* Improved animation */
-        }
-        
-        @keyframes fadeInScale {
-            from { opacity: 0; transform: translateY(30px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        
-        .image-wrapper {
-            position: relative;
-            display: inline-block;
-        }
-        
-        img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.25);
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: 4px solid rgba(255, 255, 255, 0.8); /* White border for emphasis */
-            display: block; /* Remove extra space below image */
-            margin: 0 auto; /* Center image */
-        }
-        
-        img:hover {
-            transform: scale(1.03) rotate(1deg); /* Slight rotation on hover */
-            box-shadow: 0 12px 35px rgba(0,0,0,0.35);
-        }
-        
-        .image-caption {
+
+        .music-btn {
+            background: linear-gradient(45deg, #6f42c1, #563d7c); /* Purple for music */
+            color: white;
+            border: none;
+            padding: 12px 25px;
             font-size: 0.95em;
-            color: #777;
-            margin-top: 15px;
-            font-style: italic;
-        }
-        
-        .hide-image-btn {
-            background: #dc3545; /* Red for hide */
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            font-size: 0.9em;
             border-radius: 25px;
             cursor: pointer;
-            margin-top: 2rem;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            box-shadow: 0 6px 20px rgba(111, 66, 193, 0.2);
             font-weight: 600;
-        }
-        
-        .hide-image-btn:hover {
-            background: #c82333;
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .hide-image-btn:active {
+        .music-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(111, 66, 193, 0.3);
+            background: linear-gradient(45deg, #563d7c, #6f42c1);
+        }
+        .music-btn:active {
             transform: translateY(0);
-        }
-        
-        .fullscreen-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.95); /* Darker overlay */
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            animation: fadeInOverlay 0.3s ease-out;
-        }
-        
-        .fullscreen-overlay.show {
-            display: flex;
+            box-shadow: 0 4px 10px rgba(111, 66, 193, 0.15);
         }
 
-        @keyframes fadeInOverlay {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        .music-btn.playing {
+            background: linear-gradient(45deg, #28a745, #218838); /* Green when playing */
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.2);
         }
-        
-        .fullscreen-image {
-            max-width: 95%; /* Slightly larger in fullscreen */
-            max-height: 95%;
-            border-radius: 15px;
-            box-shadow: 0 15px 50px rgba(0,0,0,0.7); /* More dramatic shadow */
-            object-fit: contain; /* Ensures image fits without distortion */
-        }
-        
-        .close-fullscreen {
-            position: absolute;
-            top: 25px;
-            right: 35px;
-            color: white;
-            font-size: 45px;
-            cursor: pointer;
-            z-index: 1001;
-            transition: transform 0.2s ease, color 0.2s ease;
-            text-shadow: 0 2px 5px rgba(0,0,0,0.5);
-        }
-
-        .close-fullscreen:hover {
-            transform: rotate(90deg);
-            color: #ff6b6b; /* Reddish on hover */
-        }
-
-        /* Professional Edit Panel Styling */
-        .edit-panel-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8); /* Darker, more opaque overlay */
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            animation: fadeInOverlay 0.3s ease-out;
-        }
-
-        .edit-panel-overlay.show {
-            display: flex;
-        }
-
-        .edit-panel {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-            width: 90%;
-            max-width: 800px; /* Larger panel */
-            min-height: 400px;
-            padding: 2.5rem 3rem;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            animation: slideInUp 0.5s ease-out;
-            border: 1px solid #ddd;
-        }
-
-        @keyframes slideInUp {
-            from { transform: translateY(50px) scale(0.95); opacity: 0; }
-            to { transform: translateY(0) scale(1); opacity: 1; }
-        }
-
-        .edit-panel h2 {
-            font-size: 2em;
-            color: #34495e; /* Darker blue-grey */
-            margin-bottom: 2rem;
-            font-weight: 700;
-            border-bottom: 2px solid #eee;
-            padding-bottom: 15px;
-        }
-
-        .edit-options {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Responsive grid */
-            gap: 25px;
-            flex-grow: 1;
-            padding-bottom: 2rem;
-        }
-
-        .option-group {
-            background: #f8f9fa; /* Light grey background for each group */
-            border-radius: 10px;
-            padding: 20px;
-            border: 1px solid #e9ecef;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            transition: transform 0.2s ease;
-        }
-
-        .option-group:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-        }
-
-        .option-group h3 {
-            font-size: 1.3em;
-            color: #555;
-            margin-bottom: 1rem;
-            font-weight: 600;
-            border-bottom: 1px solid #e0e0e0;
-            padding-bottom: 10px;
-        }
-
-        .option-group label {
-            display: block;
-            margin-bottom: 10px;
-            color: #666;
-            font-weight: 500;
-        }
-
-        .option-group input[type="range"] {
-            width: 100%;
-            margin-top: 5px;
-            -webkit-appearance: none;
-            height: 8px;
-            border-radius: 5px;
-            background: #ddd;
-            outline: none;
-            opacity: 0.7;
-            transition: opacity .2s;
-        }
-
-        .option-group input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: #007bff;
-            cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        .option-group input[type="range"]::-moz-range-thumb {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: #007bff;
-            cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        .option-group select {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: white;
-            font-size: 1em;
-            color: #333;
-        }
-
-        .edit-panel-footer {
-            display: flex;
-            justify-content: flex-end;
-            gap: 15px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-        }
-
-        .edit-panel-footer button {
-            padding: 12px 25px;
-            border-radius: 25px;
-            border: none;
-            cursor: pointer;
-            font-size: 1em;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .edit-panel-footer .save-btn {
-            background: #007bff;
-            color: white;
-            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
-        }
-
-        .edit-panel-footer .save-btn:hover {
-            background: #0056b3;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 123, 255, 0.3);
-        }
-
-        .edit-panel-footer .cancel-btn {
-            background: #6c757d;
-            color: white;
-            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.2);
-        }
-
-        .edit-panel-footer .cancel-btn:hover {
-            background: #5a6268;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.3);
-        }
-
-        /* Close button for edit panel */
-        .close-edit-panel {
-            position: absolute;
-            top: 20px;
-            right: 30px;
-            color: #999;
-            font-size: 35px;
-            cursor: pointer;
-            z-index: 1001;
-            transition: transform 0.2s ease, color 0.2s ease;
-        }
-
-        .close-edit-panel:hover {
-            transform: rotate(90deg);
-            color: #dc3545; /* Red on hover */
+        .music-btn.playing:hover {
+            background: linear-gradient(45deg, #218838, #28a745);
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>View & Edit Your Image</h1>
-        <div class="main-buttons">
-            <button class="action-btn" onclick="showImage()">
-                🖼️ Show Image
-            </button>
-            <button class="action-btn edit" onclick="showEditPanel()">
-                🖌️ Edit Image
-            </button>
-        </div>
+        <h1>Write Your Thoughts</h1>
         
-        <div class="image-container" id="imageContainer">
-            <div class="image-wrapper">
-                <img id="mainImage" 
-                     src="YOUR_DIRECT_GIF_URL_HERE.gif" 
-                     alt="Animated GIF"
-                     onclick="openFullscreen()">
-            </div>
-            <p class="image-caption">
-                💡 Click the image to view in fullscreen
-            </p>
-            <button class="hide-image-btn" onclick="hideImage()">
-                ❌ Hide Image
+        <textarea id="myTextArea" placeholder="Start typing anything you like..."></textarea>
+
+        <div class="action-buttons">
+            <button class="action-btn" onclick="saveText()">
+                💾 Save Text
+            </button>
+            <button class="action-btn clear" onclick="clearText()">
+                🗑️ Clear All
+            </button>
+        </div>
+
+        <div class="music-control">
+            <button id="musicButton" class="music-btn" onclick="toggleMusic()">
+                🎵 Play Music
             </button>
         </div>
     </div>
 
-    <div class="fullscreen-overlay" id="fullscreenOverlay" onclick="closeFullscreen()">
-        <span class="close-fullscreen" onclick="closeFullscreen()">&times;</span>
-        <img class="fullscreen-image" id="fullscreenImage" 
-             src="YOUR_DIRECT_GIF_URL_HERE.gif">
-    </div>
-
-    <div class="edit-panel-overlay" id="editPanelOverlay">
-        <div class="edit-panel">
-            <span class="close-edit-panel" onclick="closeEditPanel()">&times;</span>
-            <h2>Professional Edit Panel (Mockup)</h2>
-            <div class="edit-options">
-                <div class="option-group">
-                    <h3>Lighting</h3>
-                    <label for="brightness">Brightness:</label>
-                    <input type="range" id="brightness" min="0" max="200" value="100">
-                    <label for="contrast">Contrast:</label>
-                    <input type="range" id="contrast" min="0" max="200" value="100">
-                </div>
-                <div class="option-group">
-                    <h3>Colors</h3>
-                    <label for="saturation">Saturation:</label>
-                    <input type="range" id="saturation" min="0" max="200" value="100">
-                    <label for="hue">Hue:</label>
-                    <input type="range" id="hue" min="0" max="360" value="0">
-                </div>
-                <div class="option-group">
-                    <h3>Clarity</h3>
-                    <label for="sharpness">Sharpness:</label>
-                    <input type="range" id="sharpness" min="0" max="100" value="0">
-                    <label for="blur">Blur:</label>
-                    <input type="range" id="blur" min="0" max="10" value="0">
-                </div>
-                <div class="option-group">
-                    <h3>Effects</h3>
-                    <label for="filter">Filter:</label>
-                    <select id="filter">
-                        <option value="none">None</option>
-                        <option value="grayscale">Grayscale</option>
-                        <option value="sepia">Sepia</option>
-                        <option value="invert">Invert</option>
-                    </select>
-                </div>
-            </div>
-            <div class="edit-panel-footer">
-                <button class="save-btn" onclick="alert('Changes saved! (Mock function)')">Save Changes</button>
-                <button class="cancel-btn" onclick="closeEditPanel()">Cancel</button>
-            </div>
-        </div>
-    </div>
-
-    <audio id="rickrollAudio" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" preload="auto" loop></audio>
+    <audio id="guitarMusic" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" loop></audio>
 
     <script>
-        function showImage() {
-            const container = document.getElementById('imageContainer');
-            container.classList.add('show');
-            closeEditPanel(); // Close edit panel if open
-        }
-        
-        function hideImage() {
-            const container = document.getElementById('imageContainer');
-            container.classList.remove('show');
-        }
-        
-        function openFullscreen() {
-            const overlay = document.getElementById('fullscreenOverlay');
-            const mainImage = document.getElementById('mainImage');
-            document.getElementById('fullscreenImage').src = mainImage.src; // Ensure src is copied
-            overlay.classList.add('show');
-            document.body.style.overflow = 'hidden'; // Prevent scrolling when fullscreen
-        }
-        
-        function closeFullscreen() {
-            const overlay = document.getElementById('fullscreenOverlay');
-            overlay.classList.remove('show');
-            document.body.style.overflow = 'auto'; // Re-enable scrolling
-        }
+        const textArea = document.getElementById('myTextArea');
+        const guitarMusic = document.getElementById('guitarMusic');
+        const musicButton = document.getElementById('musicButton');
 
-        function showEditPanel() {
-            const editPanelOverlay = document.getElementById('editPanelOverlay');
-            editPanelOverlay.classList.add('show');
-            document.body.style.overflow = 'hidden'; // Prevent scrolling when edit panel is open
-            hideImage(); // Hide the image container if it's open
-        }
-
-        function closeEditPanel() {
-            const editPanelOverlay = document.getElementById('editPanelOverlay');
-            editPanelOverlay.classList.remove('show');
-            document.body.style.overflow = 'auto'; // Re-enable scrolling
-        }
-        
-        // Close fullscreen or edit panel with Escape key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeFullscreen();
-                closeEditPanel();
+        // Function to save text (mock function)
+        function saveText() {
+            const textContent = textArea.value;
+            if (textContent.trim() === '') {
+                alert('There is no text to save!');
+                return;
             }
-        });
+            // In a real application, you would send this to a server or download it.
+            // For this example, we'll just log it and show an alert.
+            console.log('Text Saved:', textContent);
+            alert('Your text has been "saved"! (This is a mock function)');
+        }
 
-        // Play Rickroll audio on page load (with a slight delay to ensure user interaction capability)
-        window.addEventListener('load', () => {
-            const audio = document.getElementById('rickrollAudio');
-            // Using a setTimeout to give browsers a moment before attempting autoplay,
-            // though actual autoplay behavior is heavily restricted by modern browsers.
-            // For a guaranteed play, you'd need a user interaction to trigger it.
-            setTimeout(() => {
-                audio.play().catch(error => {
-                    console.log('Autoplay prevented:', error);
-                    // You might want to add a visible play button if autoplay fails
+        // Function to clear text
+        function clearText() {
+            if (textArea.value.trim() !== '') {
+                if (confirm('Are you sure you want to clear all text?')) {
+                    textArea.value = '';
+                    alert('Text cleared!');
+                }
+            } else {
+                alert('Text area is already empty!');
+            }
+        }
+
+        // Function to play/pause music
+        function toggleMusic() {
+            if (guitarMusic.paused) {
+                guitarMusic.play().then(() => {
+                    musicButton.textContent = '⏸️ Pause Music';
+                    musicButton.classList.add('playing');
+                }).catch(error => {
+                    console.log('Music autoplay prevented:', error);
+                    alert('Browser prevented automatic music playback. Please click the button again or allow media autoplay in your browser settings.');
+                    musicButton.textContent = '🎵 Play Music';
+                    musicButton.classList.remove('playing');
                 });
-            }, 100); 
+            } else {
+                guitarMusic.pause();
+                musicButton.textContent = '🎵 Play Music';
+                musicButton.classList.remove('playing');
+            }
+        }
+
+        // Auto-focus on textarea when page loads for immediate typing
+        window.addEventListener('load', () => {
+            textArea.focus();
         });
     </script>
 </body>
