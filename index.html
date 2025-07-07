@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Text Editor</title>
+    <title>Shared Thoughts Board</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto+Mono&display=swap" rel="stylesheet">
     <style>
         body {
@@ -14,7 +14,7 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%); /* Fresh, calm gradient */
+            background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
             color: #333;
             overflow-x: hidden;
             transition: background 0.5s ease-in-out;
@@ -23,15 +23,18 @@
         .container {
             text-align: center;
             background: rgba(255, 255, 255, 0.95);
-            padding: 3.5rem 4rem; /* More generous padding */
-            border-radius: 25px; /* Softer corners */
-            box-shadow: 0 20px 50px rgba(0,0,0,0.2); /* Deeper shadow */
+            padding: 3.5rem 4rem;
+            border-radius: 25px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
             max-width: 90%;
-            width: 700px; /* Wider for text input */
+            width: 800px; /* Wider for comments section */
             box-sizing: border-box;
             position: relative;
             z-index: 1;
             animation: fadeInContainer 1s ease-out;
+            display: flex; /* Use flexbox for layout */
+            flex-direction: column;
+            gap: 2rem; /* Space between sections */
         }
 
         @keyframes fadeInContainer {
@@ -53,9 +56,9 @@
         }
         
         h1 {
-            font-size: 2.8em; /* Larger title */
-            color: #2c3e50; /* Darker, professional blue */
-            margin-bottom: 2.5rem;
+            font-size: 2.8em;
+            color: #2c3e50;
+            margin-bottom: 0; /* Adjusted margin */
             font-weight: 700;
             position: relative;
             z-index: 1;
@@ -67,36 +70,59 @@
             from { opacity: 0; transform: translateX(-50px); }
             to { opacity: 1; transform: translateX(0); }
         }
+
+        .input-section, .comments-section {
+            background: #f8faff; /* Slightly lighter background for sections */
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.05); /* Inner shadow */
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+        .input-section:hover, .comments-section:hover {
+            box-shadow: inset 0 2px 15px rgba(0,0,0,0.08), 0 5px 20px rgba(0,0,0,0.05);
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            color: #34495e;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 0.8rem;
+        }
         
         textarea {
-            width: calc(100% - 40px); /* Adjust for padding */
-            height: 250px; /* Taller text area */
+            width: calc(100% - 40px);
+            height: 150px; /* Smaller for input, larger for display */
             padding: 20px;
             font-size: 1.1em;
             line-height: 1.6;
-            border: 2px solid #a1c4fd; /* Soft blue border */
+            border: 2px solid #a1c4fd;
             border-radius: 15px;
             outline: none;
-            resize: vertical; /* Allow vertical resizing only */
-            margin-bottom: 2.5rem;
-            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.1);
+            resize: vertical;
+            margin-bottom: 1.5rem; /* Space below textarea */
+            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.1);
             transition: all 0.3s ease;
-            font-family: 'Roboto Mono', monospace; /* Monospace for text content */
+            font-family: 'Roboto Mono', monospace;
             color: #444;
-            background-color: #fcfdff; /* Slightly off-white background */
+            background-color: #fff; /* White background for input */
         }
 
         textarea:focus {
-            border-color: #007bff; /* Brighter blue on focus */
-            box-shadow: 0 12px 35px rgba(0, 123, 255, 0.25);
-            transform: translateY(-3px);
+            border-color: #007bff;
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.25);
+            transform: translateY(-2px);
         }
 
         .action-buttons {
             display: flex;
             justify-content: center;
             gap: 20px;
-            margin-bottom: 1.5rem; /* Space before music button */
+            margin-top: -1rem; /* Pull buttons up slightly */
+            margin-bottom: 1.5rem;
             position: relative;
             z-index: 1;
         }
@@ -105,8 +131,8 @@
             background: linear-gradient(45deg, #007bff, #0056b3);
             color: white;
             border: none;
-            padding: 18px 30px;
-            font-size: 1.1em;
+            padding: 16px 28px; /* Slightly smaller for multiple buttons */
+            font-size: 1.05em;
             border-radius: 30px;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -130,7 +156,7 @@
         }
 
         .action-btn.clear {
-            background: linear-gradient(45deg, #dc3545, #b82c3b); /* Red for clear */
+            background: linear-gradient(45deg, #dc3545, #b82c3b);
             box-shadow: 0 8px 25px rgba(220, 53, 69, 0.3);
         }
 
@@ -140,13 +166,13 @@
         }
 
         .music-control {
-            margin-top: 1.5rem;
+            margin-top: 2rem; /* Adjusted margin */
             position: relative;
             z-index: 1;
         }
 
         .music-btn {
-            background: linear-gradient(45deg, #6f42c1, #563d7c); /* Purple for music */
+            background: linear-gradient(45deg, #6f42c1, #563d7c);
             color: white;
             border: none;
             padding: 12px 25px;
@@ -172,28 +198,90 @@
         }
 
         .music-btn.playing {
-            background: linear-gradient(45deg, #28a745, #218838); /* Green when playing */
+            background: linear-gradient(45deg, #28a745, #218838);
             box-shadow: 0 6px 20px rgba(40, 167, 69, 0.2);
         }
         .music-btn.playing:hover {
             background: linear-gradient(45deg, #218838, #28a745);
             box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
         }
+
+        /* Comments Display Area */
+        #commentsContainer {
+            min-height: 200px; /* Minimum height for comments */
+            max-height: 400px; /* Max height with scroll */
+            overflow-y: auto; /* Enable scrolling */
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 15px;
+            background-color: #fcfdff;
+            text-align: left; /* Align text to left */
+            line-height: 1.8;
+            font-size: 1.05em;
+            color: #555;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.03);
+        }
+
+        .comment-item {
+            background-color: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
+        }
+        .comment-item:last-child {
+            margin-bottom: 0; /* No margin for the last comment */
+        }
+        .comment-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+
+        .comment-text {
+            word-wrap: break-word; /* Prevents long words from breaking layout */
+            font-family: 'Roboto Mono', monospace;
+            color: #333;
+        }
+
+        .comment-meta {
+            font-size: 0.8em;
+            color: #888;
+            margin-top: 5px;
+            text-align: right; /* Time on the right */
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Write Your Thoughts</h1>
+        <h1>Share Your Thoughts</h1>
         
-        <textarea id="myTextArea" placeholder="Start typing anything you like..."></textarea>
+        <div class="input-section">
+            <h2 class="section-title">Write Your Message</h2>
+            <textarea id="myTextArea" placeholder="Type your message here..."></textarea>
+            <div class="action-buttons">
+                <button class="action-btn" onclick="submitMessage()">
+                    ✉️ Submit Message
+                </button>
+                <button class="action-btn clear" onclick="clearText()">
+                    🗑️ Clear Input
+                </button>
+            </div>
+        </div>
 
-        <div class="action-buttons">
-            <button class="action-btn" onclick="saveText()">
-                💾 Save Text
-            </button>
-            <button class="action-btn clear" onclick="clearText()">
-                🗑️ Clear All
-            </button>
+        <div class="comments-section">
+            <h2 class="section-title">Shared Messages</h2>
+            <div id="commentsContainer">
+                <div class="comment-item">
+                    <p class="comment-text">Hello everyone! This is a sample message.</p>
+                    <p class="comment-meta">Added: 2024-01-01 10:00 AM</p>
+                </div>
+                <div class="comment-item">
+                    <p class="comment-text">Welcome to the shared thoughts board. Feel free to type anything!</p>
+                    <p class="comment-meta">Added: 2024-01-01 10:05 AM</p>
+                </div>
+            </div>
         </div>
 
         <div class="music-control">
@@ -207,31 +295,59 @@
 
     <script>
         const textArea = document.getElementById('myTextArea');
+        const commentsContainer = document.getElementById('commentsContainer');
         const guitarMusic = document.getElementById('guitarMusic');
         const musicButton = document.getElementById('musicButton');
 
-        // Function to save text (mock function)
-        function saveText() {
-            const textContent = textArea.value;
-            if (textContent.trim() === '') {
-                alert('There is no text to save!');
+        // This is a MOCK function. In a real app, this would send data to a backend server.
+        function submitMessage() {
+            const message = textArea.value.trim();
+            if (message === '') {
+                alert('Please write something before submitting!');
                 return;
             }
-            // In a real application, you would send this to a server or download it.
-            // For this example, we'll just log it and show an alert.
-            console.log('Text Saved:', textContent);
-            alert('Your text has been "saved"! (This is a mock function)');
+
+            // Simulate adding the message to the "shared" list
+            const now = new Date();
+            const timestamp = now.getFullYear() + '-' + 
+                              String(now.getMonth() + 1).padStart(2, '0') + '-' + 
+                              String(now.getDay()).padStart(2, '0') + ' ' + 
+                              String(now.getHours()).padStart(2, '0') + ':' + 
+                              String(now.getMinutes()).padStart(2, '0');
+
+            const commentDiv = document.createElement('div');
+            commentDiv.classList.add('comment-item');
+            commentDiv.innerHTML = `
+                <p class="comment-text">${escapeHTML(message)}</p>
+                <p class="comment-meta">Added: ${timestamp}</p>
+            `;
+            
+            // Add new comment to the top of the list
+            commentsContainer.prepend(commentDiv);
+            
+            textArea.value = ''; // Clear the textarea after "submission"
+            alert('Your message has been "submitted"! (This is a mock function, it will not be permanently saved or shared across sessions/users)');
+            
+            // Scroll to top of comments to see new message
+            commentsContainer.scrollTop = 0;
         }
 
-        // Function to clear text
+        // Helper function to prevent XSS (Cross-Site Scripting) in mock display
+        function escapeHTML(str) {
+            const div = document.createElement('div');
+            div.appendChild(document.createTextNode(str));
+            return div.innerHTML;
+        }
+
+        // Function to clear text input only
         function clearText() {
             if (textArea.value.trim() !== '') {
-                if (confirm('Are you sure you want to clear all text?')) {
+                if (confirm('Are you sure you want to clear your current input?')) {
                     textArea.value = '';
-                    alert('Text cleared!');
+                    alert('Input cleared!');
                 }
             } else {
-                alert('Text area is already empty!');
+                alert('Input area is already empty!');
             }
         }
 
@@ -254,7 +370,7 @@
             }
         }
 
-        // Auto-focus on textarea when page loads for immediate typing
+        // Auto-focus on textarea when page loads
         window.addEventListener('load', () => {
             textArea.focus();
         });
