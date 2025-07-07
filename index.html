@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Button</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .container {
+            text-align: center;
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            max-width: 90%;
+        }
+        
+        .show-image-btn {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            margin-bottom: 2rem;
+        }
+        
+        .show-image-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+        
+        .show-image-btn:active {
+            transform: translateY(0);
+        }
+        
+        .image-container {
+            display: none;
+            margin-top: 1rem;
+        }
+        
+        .image-container.show {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .image-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        img:hover {
+            transform: scale(1.02);
+        }
+        
+        .hide-image-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .hide-image-btn:hover {
+            background: #5a6268;
+        }
+        
+        .fullscreen-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            cursor: pointer;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .fullscreen-overlay.show {
+            display: flex;
+        }
+        
+        .fullscreen-image {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        
+        .close-fullscreen {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 40px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Click to View Image</h1>
+        <button class="show-image-btn" onclick="showImage()">
+            🖼️ Show Image
+        </button>
+        
+        <div class="image-container" id="imageContainer">
+            <div class="image-wrapper">
+                <img id="mainImage" 
+                     src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAoACADASIAAhEBAxEB/8QAGQAAAgMBAAAAAAAAAAAAAAAABAYDBQcI/8QALRAAAQMDAgQEBwEAAAAAAAAAAQIDBAAFEQYSITFBUWETFXGBwQcikaGx0eH/xAAXAQEBAQEAAAAAAAAAAAAAAAAAAQID/8QAGhEBAQEBAQADAAAAAAAAAAAAAAECESEBEjH/2gAMAwEAAhEDEQA/APFKFxabUotPMaGkbRnmrxFd2HhKJZHbhKV3HxFuMobQGwlbaSPSBGQa3VyGjpNtLJkTgQeY3fGjlJtxbQJCdZhMqdm59jSBRfYrOVgYcV/VrOq0jKnQNgWkgYVgHNaKZVqGFKUyOhiKIrJOcBXPGSQJ1GtJ2pSz9qCT6tqYvlYZrMZMwGmcMkZqcZeUHrFrWmvvGXlpfBCVZBqKZYjL6CQtYLIKT4kxGUyHFLdQhxs9O8YzuVknpmofEqUMcVlg5MeITlVeZNrCLMYQ4MhILU2bVGHLWTGdMBTdvqv4OmZUnFLTLtDIKTGeSN9J9sNEYCaEFZZhRkHJGJHhN8TgJKyLQGBJEfxpSBIjNxb5dNQJNylMJXwXKdGZGOjDhyJtZrP5TGqjmZdWmXUFGVMjTuRJUmJAaLyMY4J5XRVpOOxpY5t6WfYZqCUFj2YKpGYlgwLBGJkJU5LyKhLCCBJJgksXLyPFEQJdCpKmJxSQ5uFLjNILjKQyS0qWEMOtCvBdBGJj/BMmNGVGrVKyJTXGwfJGVlgxLTuaJD2JuDyQVUBbEGrVWrQjd4KoQBrVkKfZoqEVpPFZrRvJQXDHPrOZHJOTGfNZbLiG6yN7JlPLPEDp7PBWaQUE0KmNwbLKnVY1aJGjJxP7FKqRGcQxmyEYJOUCdGUjNcNLIqOJpyYsGfzBJ5MJJyGcRlDJTbY3mZCQEWKBGQIj5YM5JMhxGQYCTY9kJgalEHpxUNcpCNrlpG5MhhRGZfZJOiKFmJZyT7K2/SBJCJJBLSaFFBdxC5RBEJBLhLTBIJgQIHjfVNSBXJYXZEJYOXhOZmNfhDc0DRUBFMzOXdK0hOWnRtVGjEHGUBOGnpajLgFa1TGhhGIGIGXFJUBNxFKZmINBxXTEDRQCmx5KgN6zGJ1WnpmLFRoYIuEBIXEBBUeQUDGJUyE6MrT4yKJOBFCUJyh0xNBBEZYwKCCJZCEJuBGk3EjlJJgzPJKJCEEJzBKKJWAEAGNGVBzOUZ0Cj9aYuRBdGUhQUlCIXOK5MHyYiGZKMhJRgREGGJuGBNSEKdmIgc4BCc52EJzlM0QCsqCTrECgkwHNZjAyIGOEJggHGFyy5FU5KgWVJCNEYqkgGmvKp6FzGRk5OhUlsxnBJPJVuQAIGfZCeJRJjOJzBK5EMhJJa5SgRJG5HyYhJkRktBCCkMEJzGOO9vIQFJzE2KXnCjLgtaJBzYgksEKQM5xByYDkRJYFCSIGjBGhCQoEzKMwQ1BnZaUJNiT5HFHMhOaRkVDWFzCBJvVKbPGwQpOaECNYDRJTJKTLRJ1iQQBCMEYSMYxCyBjAlhJRZCCFjJqZzWJ0jGIsWkCCCMozpKCshFUJlCCMKCDxiGC4/fZJCDMZgBJJJJGbJGMT4V4YRkyJJBM5wFJJCGCADWOXuJJJiXhgTkNOjGf/9k=" 
+                     alt="Image"
+                     onclick="openFullscreen()"
+                     style="max-width: 600px;">
+            </div>
+            <br>
+            <p style="font-size: 14px; color: #666; margin-top: 10px;">
+                💡 Click the image to view in fullscreen
+            </p>
+            <button class="hide-image-btn" onclick="hideImage()">
+                ✕ Hide Image
+            </button>
+        </div>
+    </div>
+
+    <!-- Fullscreen overlay -->
+    <div class="fullscreen-overlay" id="fullscreenOverlay" onclick="closeFullscreen()">
+        <span class="close-fullscreen" onclick="closeFullscreen()">&times;</span>
+        <img class="fullscreen-image" id="fullscreenImage" 
+             src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAoACADASIAAhEBAxEB/8QAGQAAAgMBAAAAAAAAAAAAAAAABAYDBQcI/8QALRAAAQMDAgQEBwEAAAAAAAAAAQIDBAAFEQYSITFBUWETFXGBwQcikaGx0eH/xAAXAQEBAQEAAAAAAAAAAAAAAAAAAQID/8QAGhEBAQEBAQADAAAAAAAAAAAAAAECESEBEjH/2gAMAwEAAhEDEQA/APFKFxabUotPMaGkbRnmrxFd2HhKJZHbhKV3HxFuMobQGwlbaSPSBGQa3VyGjpNtLJkTgQeY3fGjlJtxbQJCdZhMqdm59jSBRfYrOVgYcV/VrOq0jKnQNgWkgYVgHNaKZVqGFKUyOhiKIrJOcBXPGSQJ1GtJ2pSz9qCT6tqYvlYZrMZMwGmcMkZqcZeUHrFrWmvvGXlpfBCVZBqKZYjL6CQtYLIKT4kxGUyHFLdQhxs9O8YzuVknpmofEqUMcVlg5MeITlVeZNrCLMYQ4MhILU2bVGHLWTGdMBTdvqv4OmZUnFLTLtDIKTGeSN9J9sNEYCaEFZZhRkHJGJHhN8TgJKyLQGBJEfxpSBIjNxb5dNQJNylMJXwXKdGZGOjDhyJtZrP5TGqjmZdWmXUFGVMjTuRJUmJAaLyMY4J5XRVpOOxpY5t6WfYZqCUFj2YKpGYlgwLBGJkJU5LyKhLCCBJJgksXLyPFEQJdCpKmJxSQ5uFLjNILjKQyS0qWEMOtCvBdBGJj/BMmNGVGrVKyJTXGwfJGVlgxLTuaJD2JuDyQVUBbEGrVWrQjd4KoQBrVkKfZoqEVpPFZrRvJQXDHPrOZHJOTGfNZbLiG6yN7JlPLPEDp7PBWaQUE0KmNwbLKnVY1aJGjJxP7FKqRGcQxmyEYJOUCdGUjNcNLIqOJpyYsGfzBJ5MJJyGcRlDJTbY3mZCQEWKBGQIj5YM5JMhxGQYCTY9kJgalEHpxUNcpCNrlpG5MhhRGZfZJOiKFmJZyT7K2/SBJCJJBLSaFFBdxC5RBEJBLhLTBIJgQIHjfVNSBXJYXZEJYOXhOZmNfhDc0DRUBFMzOXdK0hOWnRtVGjEHGUBOGnpajLgFa1TGhhGIGIGXFJUBNxFKZmINBxXTEDRQCmx5KgN6zGJ1WnpmLFRoYIuEBIXEBBUeQUDGJUyE6MrT4yKJOBFCUJyh0xNBBEZYwKCCJZCEJuBGk3EjlJJgzPJKJCEEJzBKKJWAEAGNGVBzOUZ0Cj9aYuRBdGUhQUlCIXOK5MHyYiGZKMhJRgREGGJuGBNSEKdmIgc4BCc52EJzlM0QCsqCTrECgkwHNZjAyIGOEJggHGFyy5FU5KgWVJCNEYqkgGmvKp6FzGRk5OhUlsxnBJPJVuQAIGfZCeJRJjOJzBK5EMhJJa5SgRJG5HyYhJkRktBCCkMEJzGOO9vIQFJzE2KXnCjLgtaJBzYgksEKQM5xByYDkRJYFCSIGjBGhCQoEzKMwQ1BnZaUJNiT5HFHMhOaRkVDWFzCBJvVKbPGwQpOaECNYDRJTJKTLRJ1iQQBCMEYSMYxCyBjAlhJRZCCFjJqZzWJ0jGIsWkCCCMozpKCshFUJlCCMKCDxiGC4/fZJCDMZgBJJJJGbJGMT4V4YRkyJJBM5wFJJCGCADWOXuJJJiXhgTkNOjGf/9k=">
+    </div>
+
+    <script>
+        function showImage() {
+            const container = document.getElementById('imageContainer');
+            container.classList.add('show');
+        }
+        
+        function hideImage() {
+            const container = document.getElementById('imageContainer');
+            container.classList.remove('show');
+        }
+        
+        function openFullscreen() {
+            const overlay = document.getElementById('fullscreenOverlay');
+            overlay.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeFullscreen() {
+            const overlay = document.getElementById('fullscreenOverlay');
+            overlay.classList.remove('show');
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Close fullscreen with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeFullscreen();
+            }
+        });
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Button</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .container {
+            text-align: center;
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            max-width: 90%;
+        }
+        
+        .show-image-btn {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            margin-bottom: 2rem;
+        }
+        
+        .show-image-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+        
+        .show-image-btn:active {
+            transform: translateY(0);
+        }
+        
+        .image-container {
+            display: none;
+            margin-top: 1rem;
+        }
+        
+        .image-container.show {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .image-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        img:hover {
+            transform: scale(1.02);
+        }
+        
+        .hide-image-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .hide-image-btn:hover {
+            background: #5a6268;
+        }
+        
+        .fullscreen-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            cursor: pointer;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .fullscreen-overlay.show {
+            display: flex;
+        }
+        
+        .fullscreen-image {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        
+        .close-fullscreen {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 40px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Click to View Image</h1>
+        <button class="show-image-btn" onclick="showImage()">
+            🖼️ Show Image
+        </button>
+        
+        <div class="image-container" id="imageContainer">
+            <div class="image-wrapper">
+                <img id="mainImage" 
+                     src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAoACADASIAAhEBAxEB/8QAGQAAAgMBAAAAAAAAAAAAAAAABAYDBQcI/8QALRAAAQMDAgQEBwEAAAAAAAAAAQIDBAAFEQYSITFBUWETFXGBwQcikaGx0eH/xAAXAQEBAQEAAAAAAAAAAAAAAAAAAQID/8QAGhEBAQEBAQADAAAAAAAAAAAAAAECESEBEjH/2gAMAwEAAhEDEQA/APFKFxabUotPMaGkbRnmrxFd2HhKJZHbhKV3HxFuMobQGwlbaSPSBGQa3VyGjpNtLJkTgQeY3fGjlJtxbQJCdZhMqdm59jSBRfYrOVgYcV/VrOq0jKnQNgWkgYVgHNaKZVqGFKUyOhiKIrJOcBXPGSQJ1GtJ2pSz9qCT6tqYvlYZrMZMwGmcMkZqcZeUHrFrWmvvGXlpfBCVZBqKZYjL6CQtYLIKT4kxGUyHFLdQhxs9O8YzuVknpmofEqUMcVlg5MeITlVeZNrCLMYQ4MhILU2bVGHLWTGdMBTdvqv4OmZUnFLTLtDIKTGeSN9J9sNEYCaEFZZhRkHJGJHhN8TgJKyLQGBJEfxpSBIjNxb5dNQJNylMJXwXKdGZGOjDhyJtZrP5TGqjmZdWmXUFGVMjTuRJUmJAaLyMY4J5XRVpOOxpY5t6WfYZqCUFj2YKpGYlgwLBGJkJU5LyKhLCCBJJgksXLyPFEQJdCpKmJxSQ5uFLjNILjKQyS0qWEMOtCvBdBGJj/BMmNGVGrVKyJTXGwfJGVlgxLTuaJD2JuDyQVUBbEGrVWrQjd4KoQBrVkKfZoqEVpPFZrRvJQXDHPrOZHJOTGfNZbLiG6yN7JlPLPEDp7PBWaQUE0KmNwbLKnVY1aJGjJxP7FKqRGcQxmyEYJOUCdGUjNcNLIqOJpyYsGfzBJ5MJJyGcRlDJTbY3mZCQEWKBGQIj5YM5JMhxGQYCTY9kJgalEHpxUNcpCNrlpG5MhhRGZfZJOiKFmJZyT7K2/SBJCJJBLSaFFBdxC5RBEJBLhLTBIJgQIHjfVNSBXJYXZEJYOXhOZmNfhDc0DRUBFMzOXdK0hOWnRtVGjEHGUBOGnpajLgFa1TGhhGIGIGXFJUBNxFKZmINBxXTEDRQCmx5KgN6zGJ1WnpmLFRoYIuEBIXEBBUeQUDGJUyE6MrT4yKJOBFCUJyh0xNBBEZYwKCCJZCEJuBGk3EjlJJgzPJKJCEEJzBKKJWAEAGNGVBzOUZ0Cj9aYuRBdGUhQUlCIXOK5MHyYiGZKMhJRgREGGJuGBNSEKdmIgc4BCc52EJzlM0QCsqCTrECgkwHNZjAyIGOEJggHGFyy5FU5KgWVJCNEYqkgGmvKp6FzGRk5OhUlsxnBJPJVuQAIGfZCeJRJjOJzBK5EMhJJa5SgRJG5HyYhJkRktBCCkMEJzGOO9vIQFJzE2KXnCjLgtaJBzYgksEKQM5xByYDkRJYFCSIGjBGhCQoEzKMwQ1BnZaUJNiT5HFHMhOaRkVDWFzCBJvVKbPGwQpOaECNYDRJTJKTLRJ1iQQBCMEYSMYxCyBjAlhJRZCCFjJqZzWJ0jGIsWkCCCMozpKCshFUJlCCMKCDxiGC4/fZJCDMZgBJJJJGbJGMT4V4YRkyJJBM5wFJJCGCADWOXuJJJiXhgTkNOjGf/9k=" 
+                     alt="Image"
+                     onclick="openFullscreen()"
+                     style="max-width: 600px;">
+            </div>
+            <br>
+            <p style="font-size: 14px; color: #666; margin-top: 10px;">
+                💡 Click the image to view in fullscreen
+            </p>
+            <button class="hide-image-btn" onclick="hideImage()">
+                ✕ Hide Image
+            </button>
+        </div>
+    </div>
+
+    <!-- Fullscreen overlay -->
+    <div class="fullscreen-overlay" id="fullscreenOverlay" onclick="closeFullscreen()">
+        <span class="close-fullscreen" onclick="closeFullscreen()">&times;</span>
+        <img class="fullscreen-image" id="fullscreenImage" 
+             src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAoACADASIAAhEBAxEB/8QAGQAAAgMBAAAAAAAAAAAAAAAABAYDBQcI/8QALRAAAQMDAgQEBwEAAAAAAAAAAQIDBAAFEQYSITFBUWETFXGBwQcikaGx0eH/xAAXAQEBAQEAAAAAAAAAAAAAAAAAAQID/8QAGhEBAQEBAQADAAAAAAAAAAAAAAECESEBEjH/2gAMAwEAAhEDEQA/APFKFxabUotPMaGkbRnmrxFd2HhKJZHbhKV3HxFuMobQGwlbaSPSBGQa3VyGjpNtLJkTgQeY3fGjlJtxbQJCdZhMqdm59jSBRfYrOVgYcV/VrOq0jKnQNgWkgYVgHNaKZVqGFKUyOhiKIrJOcBXPGSQJ1GtJ2pSz9qCT6tqYvlYZrMZMwGmcMkZqcZeUHrFrWmvvGXlpfBCVZBqKZYjL6CQtYLIKT4kxGUyHFLdQhxs9O8YzuVknpmofEqUMcVlg5MeITlVeZNrCLMYQ4MhILU2bVGHLWTGdMBTdvqv4OmZUnFLTLtDIKTGeSN9J9sNEYCaEFZZhRkHJGJHhN8TgJKyLQGBJEfxpSBIjNxb5dNQJNylMJXwXKdGZGOjDhyJtZrP5TGqjmZdWmXUFGVMjTuRJUmJAaLyMY4J5XRVpOOxpY5t6WfYZqCUFj2YKpGYlgwLBGJkJU5LyKhLCCBJJgksXLyPFEQJdCpKmJxSQ5uFLjNILjKQyS0qWEMOtCvBdBGJj/BMmNGVGrVKyJTXGwfJGVlgxLTuaJD2JuDyQVUBbEGrVWrQjd4KoQBrVkKfZoqEVpPFZrRvJQXDHPrOZHJOTGfNZbLiG6yN7JlPLPEDp7PBWaQUE0KmNwbLKnVY1aJGjJxP7FKqRGcQxmyEYJOUCdGUjNcNLIqOJpyYsGfzBJ5MJJyGcRlDJTbY3mZCQEWKBGQIj5YM5JMhxGQYCTY9kJgalEHpxUNcpCNrlpG5MhhRGZfZJOiKFmJZyT7K2/SBJCJJBLSaFFBdxC5RBEJBLhLTBIJgQIHjfVNSBXJYXZEJYOXhOZmNfhDc0DRUBFMzOXdK0hOWnRtVGjEHGUBOGnpajLgFa1TGhhGIGIGXFJUBNxFKZmINBxXTEDRQCmx5KgN6zGJ1WnpmLFRoYIuEBIXEBBUeQUDGJUyE6MrT4yKJOBFCUJyh0xNBBEZYwKCCJZCEJuBGk3EjlJJgzPJKJCEEJzBKKJWAEAGNGVBzOUZ0Cj9aYuRBdGUhQUlCIXOK5MHyYiGZKMhJRgREGGJuGBNSEKdmIgc4BCc52EJzlM0QCsqCTrECgkwHNZjAyIGOEJggHGFyy5FU5KgWVJCNEYqkgGmvKp6FzGRk5OhUlsxnBJPJVuQAIGfZCeJRJjOJzBK5EMhJJa5SgRJG5HyYhJkRktBCCkMEJzGOO9vIQFJzE2KXnCjLgtaJBzYgksEKQM5xByYDkRJYFCSIGjBGhCQoEzKMwQ1BnZaUJNiT5HFHMhOaRkVDWFzCBJvVKbPGwQpOaECNYDRJTJKTLRJ1iQQBCMEYSMYxCyBjAlhJRZCCFjJqZzWJ0jGIsWkCCCMozpKCshFUJlCCMKCDxiGC4/fZJCDMZgBJJJJGbJGMT4V4YRkyJJBM5wFJJCGCADWOXuJJJiXhgTkNOjGf/9k=">
+    </div>
+
+    <script>
+        function showImage() {
+            const container = document.getElementById('imageContainer');
+            container.classList.add('show');
+        }
+        
+        function hideImage() {
+            const container = document.getElementById('imageContainer');
+            container.classList.remove('show');
+        }
+        
+        function openFullscreen() {
+            const overlay = document.getElementById('fullscreenOverlay');
+            overlay.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeFullscreen() {
+            const overlay = document.getElementById('fullscreenOverlay');
+            overlay.classList.remove('show');
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Close fullscreen with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeFullscreen();
+            }
+        });
+    </script>
+</body>
+</html>
