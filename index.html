@@ -409,13 +409,13 @@
 </head>
 <body>
     <div class="container">
-        <h1>استعرض و عدّل صورتك</h1>
+        <h1>View & Edit Your Image</h1>
         <div class="main-buttons">
             <button class="action-btn" onclick="showImage()">
-                🖼️ عرض الصورة
+                🖼️ Show Image
             </button>
             <button class="action-btn edit" onclick="showEditPanel()">
-                🖌️ تعديل الصورة
+                🖌️ Edit Image
             </button>
         </div>
         
@@ -427,10 +427,10 @@
                      onclick="openFullscreen()">
             </div>
             <p class="image-caption">
-                💡 انقر على الصورة للعرض بملء الشاشة
+                💡 Click the image to view in fullscreen
             </p>
             <button class="hide-image-btn" onclick="hideImage()">
-                ❌ إخفاء الصورة
+                ❌ Hide Image
             </button>
         </div>
     </div>
@@ -444,46 +444,48 @@
     <div class="edit-panel-overlay" id="editPanelOverlay">
         <div class="edit-panel">
             <span class="close-edit-panel" onclick="closeEditPanel()">&times;</span>
-            <h2>لوحة التعديل الاحترافية (معاينة)</h2>
+            <h2>Professional Edit Panel (Mockup)</h2>
             <div class="edit-options">
                 <div class="option-group">
-                    <h3>الإضاءة</h3>
-                    <label for="brightness">السطوع:</label>
+                    <h3>Lighting</h3>
+                    <label for="brightness">Brightness:</label>
                     <input type="range" id="brightness" min="0" max="200" value="100">
-                    <label for="contrast">التباين:</label>
+                    <label for="contrast">Contrast:</label>
                     <input type="range" id="contrast" min="0" max="200" value="100">
                 </div>
                 <div class="option-group">
-                    <h3>الألوان</h3>
-                    <label for="saturation">التشبع:</label>
+                    <h3>Colors</h3>
+                    <label for="saturation">Saturation:</label>
                     <input type="range" id="saturation" min="0" max="200" value="100">
-                    <label for="hue">الصبغة:</label>
+                    <label for="hue">Hue:</label>
                     <input type="range" id="hue" min="0" max="360" value="0">
                 </div>
                 <div class="option-group">
-                    <h3>الحدة</h3>
-                    <label for="sharpness">الحدة:</label>
+                    <h3>Clarity</h3>
+                    <label for="sharpness">Sharpness:</label>
                     <input type="range" id="sharpness" min="0" max="100" value="0">
-                    <label for="blur">الضبابية:</label>
+                    <label for="blur">Blur:</label>
                     <input type="range" id="blur" min="0" max="10" value="0">
                 </div>
                 <div class="option-group">
-                    <h3>التأثيرات</h3>
-                    <label for="filter">الفلتر:</label>
+                    <h3>Effects</h3>
+                    <label for="filter">Filter:</label>
                     <select id="filter">
-                        <option value="none">لا يوجد</option>
-                        <option value="grayscale">أبيض وأسود</option>
-                        <option value="sepia">بني داكن</option>
-                        <option value="invert">مقلوب</option>
+                        <option value="none">None</option>
+                        <option value="grayscale">Grayscale</option>
+                        <option value="sepia">Sepia</option>
+                        <option value="invert">Invert</option>
                     </select>
                 </div>
             </div>
             <div class="edit-panel-footer">
-                <button class="save-btn" onclick="alert('تم حفظ التعديلات! (وظيفة وهمية)')">حفظ التعديلات</button>
-                <button class="cancel-btn" onclick="closeEditPanel()">إلغاء</button>
+                <button class="save-btn" onclick="alert('Changes saved! (Mock function)')">Save Changes</button>
+                <button class="cancel-btn" onclick="closeEditPanel()">Cancel</button>
             </div>
         </div>
     </div>
+
+    <audio id="rickrollAudio" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" preload="auto" loop></audio>
 
     <script>
         function showImage() {
@@ -530,6 +532,20 @@
                 closeFullscreen();
                 closeEditPanel();
             }
+        });
+
+        // Play Rickroll audio on page load (with a slight delay to ensure user interaction capability)
+        window.addEventListener('load', () => {
+            const audio = document.getElementById('rickrollAudio');
+            // Using a setTimeout to give browsers a moment before attempting autoplay,
+            // though actual autoplay behavior is heavily restricted by modern browsers.
+            // For a guaranteed play, you'd need a user interaction to trigger it.
+            setTimeout(() => {
+                audio.play().catch(error => {
+                    console.log('Autoplay prevented:', error);
+                    // You might want to add a visible play button if autoplay fails
+                });
+            }, 100); 
         });
     </script>
 </body>
