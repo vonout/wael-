@@ -3,63 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Button</title>
+    <title>Professional Image Viewer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Montserrat', sans-serif;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%); /* Softer gradient */
+            color: #333;
         }
         
         .container {
             text-align: center;
-            background: white;
-            padding: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            background: rgba(255, 255, 255, 0.95); /* Slightly transparent white */
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15); /* More pronounced shadow */
             max-width: 90%;
+            width: 500px; /* Fixed width for better layout */
+            box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            right: -20px;
+            bottom: -20px;
+            background: url('https://via.placeholder.com/150/F0F0F0/000000?text=Background+Pattern') repeat; /* Subtle background pattern */
+            opacity: 0.05;
+            z-index: 0;
+            border-radius: 20px;
+        }
+
+        h1 {
+            font-size: 2.2em;
+            color: #4a4a4a;
+            margin-bottom: 2rem;
+            font-weight: 700;
         }
         
         .show-image-btn {
-            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            background: linear-gradient(45deg, #007bff, #0056b3); /* Professional blue gradient */
             color: white;
             border: none;
-            padding: 15px 30px;
-            font-size: 18px;
-            border-radius: 25px;
+            padding: 18px 35px;
+            font-size: 1.1em;
+            border-radius: 30px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            margin-bottom: 2rem;
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3); /* Blue shadow */
+            margin-bottom: 2.5rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
         }
         
         .show-image-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(0, 123, 255, 0.4);
+            background: linear-gradient(45deg, #0056b3, #007bff); /* Reverse gradient on hover */
         }
         
         .show-image-btn:active {
             transform: translateY(0);
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
         }
         
         .image-container {
             display: none;
             margin-top: 1rem;
+            position: relative;
+            z-index: 1; /* Ensure it's above the background pattern */
         }
         
         .image-container.show {
             display: block;
-            animation: fadeIn 0.5s ease-in;
+            animation: fadeInScale 0.7s ease-in-out; /* Improved animation */
         }
         
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
         
         .image-wrapper {
@@ -70,30 +102,46 @@
         img {
             max-width: 100%;
             height: auto;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.25);
             cursor: pointer;
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 4px solid rgba(255, 255, 255, 0.8); /* White border for emphasis */
         }
         
         img:hover {
-            transform: scale(1.02);
+            transform: scale(1.03) rotate(1deg); /* Slight rotation on hover */
+            box-shadow: 0 12px 35px rgba(0,0,0,0.35);
+        }
+        
+        .image-caption {
+            font-size: 0.95em;
+            color: #777;
+            margin-top: 15px;
+            font-style: italic;
         }
         
         .hide-image-btn {
             background: #6c757d;
             color: white;
             border: none;
-            padding: 10px 20px;
-            font-size: 14px;
-            border-radius: 20px;
+            padding: 12px 25px;
+            font-size: 0.9em;
+            border-radius: 25px;
             cursor: pointer;
-            margin-top: 1rem;
+            margin-top: 2rem;
             transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
         }
         
         .hide-image-btn:hover {
             background: #5a6268;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        }
+
+        .hide-image-btn:active {
+            transform: translateY(0);
         }
         
         .fullscreen-overlay {
@@ -103,65 +151,75 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.9);
+            background: rgba(0,0,0,0.95); /* Darker overlay */
             z-index: 1000;
-            cursor: pointer;
             justify-content: center;
             align-items: center;
+            animation: fadeInOverlay 0.3s ease-out;
         }
         
         .fullscreen-overlay.show {
             display: flex;
         }
+
+        @keyframes fadeInOverlay {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
         
         .fullscreen-image {
-            max-width: 90%;
-            max-height: 90%;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            max-width: 95%; /* Slightly larger in fullscreen */
+            max-height: 95%;
+            border-radius: 15px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.7); /* More dramatic shadow */
+            object-fit: contain; /* Ensures image fits without distortion */
         }
         
         .close-fullscreen {
             position: absolute;
-            top: 20px;
-            right: 30px;
+            top: 25px;
+            right: 35px;
             color: white;
-            font-size: 40px;
+            font-size: 45px;
             cursor: pointer;
             z-index: 1001;
+            transition: transform 0.2s ease, color 0.2s ease;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        }
+
+        .close-fullscreen:hover {
+            transform: rotate(90deg);
+            color: #ff6b6b; /* Reddish on hover */
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Click to View Image</h1>
+        <h1>Explore the Image</h1>
         <button class="show-image-btn" onclick="showImage()">
-            🖼️ Show Image
+            ✨ Show Image
         </button>
         
         <div class="image-container" id="imageContainer">
             <div class="image-wrapper">
                 <img id="mainImage" 
-                     src="data:ADASIAAhEBAxEB/8QAGQAAAgMBAAAAAAAAAAAAAAAABAYDBQcI/8QALRAAAQMDAgQEBwEAAAAAAAAAAQIDBAAFEQYSITFBUWETFXGBwQcikaGx0eH/xAAXAQEBAQEAAAAAAAAAAAAAAAAAAQID/8QAGhEBAQEBAQADAAAAAAAAAAAAAAECESEBEjH/2gAMAwEAAhEDEQA/APFKFxabUotPMaGkbRnmrxFd2HhKJZHbhKV3HxFuMobQGwlbaSPSBGQa3VyGjpNtLJkTgQeY3fGjlJtxbQJCdZhMqdm59jSBRfYrOVgYcV/VrOq0jKnQNgWkgYVgHNaKZVqGFKUyOhiKIrJOcBXPGSQJ1GtJ2pSz9qCT6tqYvlYZrMZMwGmcMkZqcZeUHrFrWmvvGXlpfBCVZBqKZYjL6CQtYLIKT4kxGUyHFLdQhxs9O8YzuVknpmofEqUMcVlg5MeITlVeZNrCLMYQ4MhILU2bVGHLWTGdMBTdvqv4OmZUnFLTLtDIKTGeSN9J9sNEYCaEFZZhRkHJGJHhN8TgJKyLQGBJEfxpSBIjNxb5dNQJNylMJXwXKdGZGOjDhyJtZrP5TGqjmZdWmXUFGVMjTuRJUmJAaLyMY4J5XRVpOOxpY5t6WfYZqCUFj2YKpGYlgwLBGJkJU5LyKhLCCBJJgksXLyPFEQJdCpKmJxSQ5uFLjNILjKQyS0qWEMOtCvBdBGJj/BMmNGVGrVKyJTXGwfJGVlgxLTuaJD2JuDyQVUBbEGrVWrQjd4KoQBrVkKfZoqEVpPFZrRvJQXDHPrOZHJOTGfNZbLiG6yN7JlPLPEDp7PBWaQUE0KmNwbLKnVY1aJGjJxP7FKqRGcQxmyEYJOUCdGUjNcNLIqOJpyYsGfzBJ5MJJyGcRlDJTbY3mZCQEWKBGQIj5YM5JMhxGQYCTY9kJgalEHpxUNcpCNrlpG5MhhRGZfZJOiKFmJZyT7K2/SBJCJJBLSaFFBdxC5RBEJBLhLTBIJgQIHjfVNSBXJYXZEJYOXhOZmNfhDc0DRUBFMzOXdK0hOWnRtVGjEHGUBOGnpajLgFa1TGhhGIGIGXFJUBNxFKZmINBxXTEDRQCmx5KgN6zGJ1WnpmLFRoYIuEBIXEBBUeQUDGJUyE6MrT4yKJOBFCUJyh0xNBBEZYwKCCJZCEJuBGk3EjlJJgzPJKJCEEJzBKKJWAEAGNGVBzOUZ0Cj9aYuRBdGUhQUlCIXOK5MHyYiGZKMhJRgREGGJuGBNSEKdmIgc4BCc52EJzlM0QCsqCTrECgkwHNZjAyIGOEJggHGFyy5FU5KgWVJCNEYqkgGmvKp6FzGRk5OhUlsxnBJPJVuQAIGfZCeJRJjOJzBK5EMhJJa5SgRJG5HyYhJkRktBCCkMEJzGOO9vIQFJzE2KXnCjLgtaJBzYgksEKQM5xByYDkRJYFCSIGjBGhCQoEzKMwQ1BnZaUJNiT5HFHMhOaRkVDWFzCBJvVKbPGwQpOaECNYDRJTJKTLRJ1iQQBCMEYSMYxCyBjAlhJRZCCFjJqZzWJ0jGIsWkCCCMozpKCshFUJlCCMKCDxiGC4/fZJCDMZgBJJJJGbJGMT4V4YRkyJJBM5wFJJCGCADWOXuJJJiXhgTkNOjGf/9k=" 
-                     alt="Image"
-                     onclick="openFullscreen()"
-                     style="max-width: 600px;">
+                     src="https://via.placeholder.com/600x400/9b59b6/ffffff?text=Your+Image+Here" 
+                     alt="Placeholder Image"
+                     onclick="openFullscreen()">
             </div>
-            <br>
-            <p style="font-size: 14px; color: #666; margin-top: 10px;">
+            <p class="image-caption">
                 💡 Click the image to view in fullscreen
             </p>
             <button class="hide-image-btn" onclick="hideImage()">
-                ✕ Hide Image
+                ❌ Hide Image
             </button>
         </div>
     </div>
 
-    <!-- Fullscreen overlay -->
     <div class="fullscreen-overlay" id="fullscreenOverlay" onclick="closeFullscreen()">
         <span class="close-fullscreen" onclick="closeFullscreen()">&times;</span>
         <img class="fullscreen-image" id="fullscreenImage" 
-             src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAoACADASIAAhEBAxEB/8QAGQAAAgMBAAAAAAAAAAAAAAAABAYDBQcI/8QALRAAAQMDAgQEBwEAAAAAAAAAAQIDBAAFEQYSITFBUWETFXGBwQcikaGx0eH/xAAXAQEBAQEAAAAAAAAAAAAAAAAAAQID/8QAGhEBAQEBAQADAAAAAAAAAAAAAAECESEBEjH/2gAMAwEAAhEDEQA/APFKFxabUotPMaGkbRnmrxFd2HhKJZHbhKV3HxFuMobQGwlbaSPSBGQa3VyGjpNtLJkTgQeY3fGjlJtxbQJCdZhMqdm59jSBRfYrOVgYcV/VrOq0jKnQNgWkgYVgHNaKZVqGFKUyOhiKIrJOcBXPGSQJ1GtJ2pSz9qCT6tqYvlYZrMZMwGmcMkZqcZeUHrFrWmvvGXlpfBCVZBqKZYjL6CQtYLIKT4kxGUyHFLdQhxs9O8YzuVknpmofEqUMcVlg5MeITlVeZNrCLMYQ4MhILU2bVGHLWTGdMBTdvqv4OmZUnFLTLtDIKTGeSN9J9sNEYCaEFZZhRkHJGJHhN8TgJKyLQGBJEfxpSBIjNxb5dNQJNylMJXwXKdGZGOjDhyJtZrP5TGqjmZdWmXUFGVMjTuRJUmJAaLyMY4J5XRVpOOxpY5t6WfYZqCUFj2YKpGYlgwLBGJkJU5LyKhLCCBJJgksXLyPFEQJdCpKmJxSQ5uFLjNILjKQyS0qWEMOtCvBdBGJj/BMmNGVGrVKyJTXGwfJGVlgxLTuaJD2JuDyQVUBbEGrVWrQjd4KoQBrVkKfZoqEVpPFZrRvJQXDHPrOZHJOTGfNZbLiG6yN7JlPLPEDp7PBWaQUE0KmNwbLKnVY1aJGjJxP7FKqRGcQxmyEYJOUCdGUjNcNLIqOJpyYsGfzBJ5MJJyGcRlDJTbY3mZCQEWKBGQIj5YM5JMhxGQYCTY9kJgalEHpxUNcpCNrlpG5MhhRGZfZJOiKFmJZyT7K2/SBJCJJBLSaFFBdxC5RBEJBLhLTBIJgQIHjfVNSBXJYXZEJYOXhOZmNfhDc0DRUBFMzOXdK0hOWnRtVGjEHGUBOGnpajLgFa1TGhhGIGIGXFJUBNxFKZmINBxXTEDRQCmx5KgN6zGJ1WnpmLFRoYIuEBIXEBBUeQUDGJUyE6MrT4yKJOBFCUJyh0xNBBEZYwKCCJZCEJuBGk3EjlJJgzPJKJCEEJzBKKJWAEAGNGVBzOUZ0Cj9aYuRBdGUhQUlCIXOK5MHyYiGZKMhJRgREGGJuGBNSEKdmIgc4BCc52EJzlM0QCsqCTrECgkwHNZjAyIGOEJggHGFyy5FU5KgWVJCNEYqkgGmvKp6FzGRk5OhUlsxnBJPJVuQAIGfZCeJRJjOJzBK5EMhJJa5SgRJG5HyYhJkRktBCCkMEJzGOO9vIQFJzE2KXnCjLgtaJBzYgksEKQM5xByYDkRJYFCSIGjBGhCQoEzKMwQ1BnZaUJNiT5HFHMhOaRkVDWFzCBJvVKbPGwQpOaECNYDRJTJKTLRJ1iQQBCMEYSMYxCyBjAlhJRZCCFjJqZzWJ0jGIsWkCCCMozpKCshFUJlCCMKCDxiGC4/fZJCDMZgBJJJJGbJGMT4V4YRkyJJBM5wFJJCGCADWOXuJJJiXhgTkNOjGf/9k=">
+             src="https://via.placeholder.com/1200x800/9b59b6/ffffff?text=Your+Image+Here+Fullscreen">
     </div>
 
     <script>
@@ -177,211 +235,16 @@
         
         function openFullscreen() {
             const overlay = document.getElementById('fullscreenOverlay');
+            const mainImageSrc = document.getElementById('mainImage').src;
+            document.getElementById('fullscreenImage').src = mainImageSrc; // Set fullscreen image source
             overlay.classList.add('show');
-            document.body.style.overflow = 'hidden';
+            document.body.style.overflow = 'hidden'; // Prevent scrolling when fullscreen
         }
         
         function closeFullscreen() {
             const overlay = document.getElementById('fullscreenOverlay');
             overlay.classList.remove('show');
-            document.body.style.overflow = 'auto';
-        }
-        
-        // Close fullscreen with Escape key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeFullscreen();
-            }
-        });
-    </script>
-</body>
-</html><!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Button</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        
-        .container {
-            text-align: center;
-            background: white;
-            padding: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            max-width: 90%;
-        }
-        
-        .show-image-btn {
-            background: linear-gradient(45deg, #4ecdc4, #44a08d);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            font-size: 18px;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            margin-bottom: 2rem;
-        }
-        
-        .show-image-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-        }
-        
-        .show-image-btn:active {
-            transform: translateY(0);
-        }
-        
-        .image-container {
-            display: none;
-            margin-top: 1rem;
-        }
-        
-        .image-container.show {
-            display: block;
-            animation: fadeIn 0.5s ease-in;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .image-wrapper {
-            position: relative;
-            display: inline-block;
-        }
-        
-        img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
-        
-        img:hover {
-            transform: scale(1.02);
-        }
-        
-        .hide-image-btn {
-            background: #6c757d;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 14px;
-            border-radius: 20px;
-            cursor: pointer;
-            margin-top: 1rem;
-            transition: all 0.3s ease;
-        }
-        
-        .hide-image-btn:hover {
-            background: #5a6268;
-        }
-        
-        .fullscreen-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 1000;
-            cursor: pointer;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .fullscreen-overlay.show {
-            display: flex;
-        }
-        
-        .fullscreen-image {
-            max-width: 90%;
-            max-height: 90%;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        
-        .close-fullscreen {
-            position: absolute;
-            top: 20px;
-            right: 30px;
-            color: white;
-            font-size: 40px;
-            cursor: pointer;
-            z-index: 1001;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Click to View Image</h1>
-        <button class="show-image-btn" onclick="showImage()">
-            🖼️ Show Image
-        </button>
-        
-        <div class="image-container" id="imageContainer">
-            <div class="image-wrapper">
-                <img id="mainImage" 
-                     src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAoACADASIAAhEBAxEB/8QAGQAAAgMBAAAAAAAAAAAAAAAABAYDBQcI/8QALRAAAQMDAgQEBwEAAAAAAAAAAQIDBAAFEQYSITFBUWETFXGBwQcikaGx0eH/xAAXAQEBAQEAAAAAAAAAAAAAAAAAAQID/8QAGhEBAQEBAQADAAAAAAAAAAAAAAECESEBEjH/2gAMAwEAAhEDEQA/APFKFxabUotPMaGkbRnmrxFd2HhKJZHbhKV3HxFuMobQGwlbaSPSBGQa3VyGjpNtLJkTgQeY3fGjlJtxbQJCdZhMqdm59jSBRfYrOVgYcV/VrOq0jKnQNgWkgYVgHNaKZVqGFKUyOhiKIrJOcBXPGSQJ1GtJ2pSz9qCT6tqYvlYZrMZMwGmcMkZqcZeUHrFrWmvvGXlpfBCVZBqKZYjL6CQtYLIKT4kxGUyHFLdQhxs9O8YzuVknpmofEqUMcVlg5MeITlVeZNrCLMYQ4MhILU2bVGHLWTGdMBTdvqv4OmZUnFLTLtDIKTGeSN9J9sNEYCaEFZZhRkHJGJHhN8TgJKyLQGBJEfxpSBIjNxb5dNQJNylMJXwXKdGZGOjDhyJtZrP5TGqjmZdWmXUFGVMjTuRJUmJAaLyMY4J5XRVpOOxpY5t6WfYZqCUFj2YKpGYlgwLBGJkJU5LyKhLCCBJJgksXLyPFEQJdCpKmJxSQ5uFLjNILjKQyS0qWEMOtCvBdBGJj/BMmNGVGrVKyJTXGwfJGVlgxLTuaJD2JuDyQVUBbEGrVWrQjd4KoQBrVkKfZoqEVpPFZrRvJQXDHPrOZHJOTGfNZbLiG6yN7JlPLPEDp7PBWaQUE0KmNwbLKnVY1aJGjJxP7FKqRGcQxmyEYJOUCdGUjNcNLIqOJpyYsGfzBJ5MJJyGcRlDJTbY3mZCQEWKBGQIj5YM5JMhxGQYCTY9kJgalEHpxUNcpCNrlpG5MhhRGZfZJOiKFmJZyT7K2/SBJCJJBLSaFFBdxC5RBEJBLhLTBIJgQIHjfVNSBXJYXZEJYOXhOZmNfhDc0DRUBFMzOXdK0hOWnRtVGjEHGUBOGnpajLgFa1TGhhGIGIGXFJUBNxFKZmINBxXTEDRQCmx5KgN6zGJ1WnpmLFRoYIuEBIXEBBUeQUDGJUyE6MrT4yKJOBFCUJyh0xNBBEZYwKCCJZCEJuBGk3EjlJJgzPJKJCEEJzBKKJWAEAGNGVBzOUZ0Cj9aYuRBdGUhQUlCIXOK5MHyYiGZKMhJRgREGGJuGBNSEKdmIgc4BCc52EJzlM0QCsqCTrECgkwHNZjAyIGOEJggHGFyy5FU5KgWVJCNEYqkgGmvKp6FzGRk5OhUlsxnBJPJVuQAIGfZCeJRJjOJzBK5EMhJJa5SgRJG5HyYhJkRktBCCkMEJzGOO9vIQFJzE2KXnCjLgtaJBzYgksEKQM5xByYDkRJYFCSIGjBGhCQoEzKMwQ1BnZaUJNiT5HFHMhOaRkVDWFzCBJvVKbPGwQpOaECNYDRJTJKTLRJ1iQQBCMEYSMYxCyBjAlhJRZCCFjJqZzWJ0jGIsWkCCCMozpKCshFUJlCCMKCDxiGC4/fZJCDMZgBJJJJGbJGMT4V4YRkyJJBM5wFJJCGCADWOXuJJJiXhgTkNOjGf/9k=" 
-                     alt="Image"
-                     onclick="openFullscreen()"
-                     style="max-width: 600px;">
-            </div>
-            <br>
-            <p style="font-size: 14px; color: #666; margin-top: 10px;">
-                💡 Click the image to view in fullscreen
-            </p>
-            <button class="hide-image-btn" onclick="hideImage()">
-                ✕ Hide Image
-            </button>
-        </div>
-    </div>
-
-    <!-- Fullscreen overlay -->
-    <div class="fullscreen-overlay" id="fullscreenOverlay" onclick="closeFullscreen()">
-        <span class="close-fullscreen" onclick="closeFullscreen()">&times;</span>
-        <img class="fullscreen-image" id="fullscreenImage" 
-             src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAoACADASIAAhEBAxEB/8QAGQAAAgMBAAAAAAAAAAAAAAAABAYDBQcI/8QALRAAAQMDAgQEBwEAAAAAAAAAAQIDBAAFEQYSITFBUWETFXGBwQcikaGx0eH/xAAXAQEBAQEAAAAAAAAAAAAAAAAAAQID/8QAGhEBAQEBAQADAAAAAAAAAAAAAAECESEBEjH/2gAMAwEAAhEDEQA/APFKFxabUotPMaGkbRnmrxFd2HhKJZHbhKV3HxFuMobQGwlbaSPSBGQa3VyGjpNtLJkTgQeY3fGjlJtxbQJCdZhMqdm59jSBRfYrOVgYcV/VrOq0jKnQNgWkgYVgHNaKZVqGFKUyOhiKIrJOcBXPGSQJ1GtJ2pSz9qCT6tqYvlYZrMZMwGmcMkZqcZeUHrFrWmvvGXlpfBCVZBqKZYjL6CQtYLIKT4kxGUyHFLdQhxs9O8YzuVknpmofEqUMcVlg5MeITlVeZNrCLMYQ4MhILU2bVGHLWTGdMBTdvqv4OmZUnFLTLtDIKTGeSN9J9sNEYCaEFZZhRkHJGJHhN8TgJKyLQGBJEfxpSBIjNxb5dNQJNylMJXwXKdGZGOjDhyJtZrP5TGqjmZdWmXUFGVMjTuRJUmJAaLyMY4J5XRVpOOxpY5t6WfYZqCUFj2YKpGYlgwLBGJkJU5LyKhLCCBJJgksXLyPFEQJdCpKmJxSQ5uFLjNILjKQyS0qWEMOtCvBdBGJj/BMmNGVGrVKyJTXGwfJGVlgxLTuaJD2JuDyQVUBbEGrVWrQjd4KoQBrVkKfZoqEVpPFZrRvJQXDHPrOZHJOTGfNZbLiG6yN7JlPLPEDp7PBWaQUE0KmNwbLKnVY1aJGjJxP7FKqRGcQxmyEYJOUCdGUjNcNLIqOJpyYsGfzBJ5MJJyGcRlDJTbY3mZCQEWKBGQIj5YM5JMhxGQYCTY9kJgalEHpxUNcpCNrlpG5MhhRGZfZJOiKFmJZyT7K2/SBJCJJBLSaFFBdxC5RBEJBLhLTBIJgQIHjfVNSBXJYXZEJYOXhOZmNfhDc0DRUBFMzOXdK0hOWnRtVGjEHGUBOGnpajLgFa1TGhhGIGIGXFJUBNxFKZmINBxXTEDRQCmx5KgN6zGJ1WnpmLFRoYIuEBIXEBBUeQUDGJUyE6MrT4yKJOBFCUJyh0xNBBEZYwKCCJZCEJuBGk3EjlJJgzPJKJCEEJzBKKJWAEAGNGVBzOUZ0Cj9aYuRBdGUhQUlCIXOK5MHyYiGZKMhJRgREGGJuGBNSEKdmIgc4BCc52EJzlM0QCsqCTrECgkwHNZjAyIGOEJggHGFyy5FU5KgWVJCNEYqkgGmvKp6FzGRk5OhUlsxnBJPJVuQAIGfZCeJRJjOJzBK5EMhJJa5SgRJG5HyYhJkRktBCCkMEJzGOO9vIQFJzE2KXnCjLgtaJBzYgksEKQM5xByYDkRJYFCSIGjBGhCQoEzKMwQ1BnZaUJNiT5HFHMhOaRkVDWFzCBJvVKbPGwQpOaECNYDRJTJKTLRJ1iQQBCMEYSMYxCyBjAlhJRZCCFjJqZzWJ0jGIsWkCCCMozpKCshFUJlCCMKCDxiGC4/fZJCDMZgBJJJJGbJGMT4V4YRkyJJBM5wFJJCGCADWOXuJJJiXhgTkNOjGf/9k=">
-    </div>
-
-    <script>
-        function showImage() {
-            const container = document.getElementById('imageContainer');
-            container.classList.add('show');
-        }
-        
-        function hideImage() {
-            const container = document.getElementById('imageContainer');
-            container.classList.remove('show');
-        }
-        
-        function openFullscreen() {
-            const overlay = document.getElementById('fullscreenOverlay');
-            overlay.classList.add('show');
-            document.body.style.overflow = 'hidden';
-        }
-        
-        function closeFullscreen() {
-            const overlay = document.getElementById('fullscreenOverlay');
-            overlay.classList.remove('show');
-            document.body.style.overflow = 'auto';
+            document.body.style.overflow = 'auto'; // Re-enable scrolling
         }
         
         // Close fullscreen with Escape key
